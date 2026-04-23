@@ -1,6 +1,6 @@
 "use server";
 
-import { CourseStatus, Prisma } from "@prisma/client";
+import { CourseStatus } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
@@ -34,7 +34,7 @@ export async function createCourse(formData: FormData): Promise<ActionResponse> 
     let joinCode = generateJoinCode();
     while (await prisma.course.findUnique({ where: { joinCode } })) { joinCode = generateJoinCode(); }
 
-    const course = await prisma.course.create({
+    await prisma.course.create({
       data: {
         title: validated.data.title,
         description: validated.data.description,
@@ -49,11 +49,7 @@ export async function createCourse(formData: FormData): Promise<ActionResponse> 
     });
 
     revalidatePath("/courses");
-    return {
-      success: true,
-      message: `Course created! Join code: ${joinCode}`,
-      data: course as Prisma.CourseUncheckedCreateInput,
-    };
+    return { success: true, message: `Course created! Join code: ${joinCode}` };
   } catch (error) {
     console.error("Create course error:", error);
     return { success: false, message: "Failed to create course" };
