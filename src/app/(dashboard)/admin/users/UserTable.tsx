@@ -15,7 +15,7 @@ type User = {
 export default function UserTable({ users, initialSearch }: { users: User[]; initialSearch: string }) {
   const router = useRouter();
   const [search, setSearch] = useState(initialSearch);
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
   const [loadingId, setLoadingId] = useState<string | null>(null);
 
   function handleSearch(value: string) {
@@ -73,7 +73,12 @@ export default function UserTable({ users, initialSearch }: { users: User[]; ini
                     </div>
                   </td>
                   <td className="py-3 px-4">
-                    <select value={user.role} onChange={(e) => handleRoleChange(user.id, e.target.value as any)} disabled={loadingId === user.id}
+                    <select
+                      value={user.role}
+                      onChange={(e) =>
+                        handleRoleChange(user.id, e.target.value as "ADMIN" | "INSTRUCTOR" | "STUDENT")
+                      }
+                      disabled={loadingId === user.id}
                       className="bg-[#12121a] border border-[#2a2a45] rounded-lg px-2 py-1 text-xs focus:outline-none focus:border-indigo-500">
                       <option value="STUDENT">Student</option>
                       <option value="INSTRUCTOR">Instructor</option>

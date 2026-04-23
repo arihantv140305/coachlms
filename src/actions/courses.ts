@@ -1,5 +1,6 @@
 "use server";
 
+import { CourseStatus, Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
@@ -39,7 +40,7 @@ export async function createCourse(formData: FormData): Promise<ActionResponse> 
         description: validated.data.description,
         code,
         joinCode,
-        status: validated.data.status as any,
+        status: validated.data.status as CourseStatus,
         createdById: session.user.id,
         maxStudents: validated.data.maxStudents,
         startDate: validated.data.startDate ? new Date(validated.data.startDate) : null,
@@ -48,7 +49,11 @@ export async function createCourse(formData: FormData): Promise<ActionResponse> 
     });
 
     revalidatePath("/courses");
-    return { success: true, message: `Course created! Join code: ${joinCode}`, data: course as any };
+    return {
+      success: true,
+      message: `Course created! Join code: ${joinCode}`,
+      data: course as Prisma.CourseUncheckedCreateInput,
+    };
   } catch (error) {
     console.error("Create course error:", error);
     return { success: false, message: "Failed to create course" };
@@ -81,7 +86,7 @@ export async function updateCourse(courseId: string, formData: FormData): Promis
       data: {
         title: validated.data.title,
         description: validated.data.description,
-        status: validated.data.status as any,
+        status: validated.data.status as CourseStatus,
         maxStudents: validated.data.maxStudents,
         startDate: validated.data.startDate ? new Date(validated.data.startDate) : null,
         endDate: validated.data.endDate ? new Date(validated.data.endDate) : null,
@@ -126,7 +131,7 @@ export async function regenerateJoinCode(courseId: string): Promise<ActionRespon
     await prisma.course.update({ where: { id: courseId }, data: { joinCode } });
     revalidatePath(`/courses/${courseId}`);
     return { success: true, message: `New join code: ${joinCode}` };
-  } catch (error) {
+  } catch {
     return { success: false, message: "Failed to regenerate code" };
   }
 }

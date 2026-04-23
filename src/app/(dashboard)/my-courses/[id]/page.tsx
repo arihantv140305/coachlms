@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, BookOpen, Calendar, Users, User } from "lucide-react";
+import { ArrowLeft, Calendar, Users, User } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 
 export default async function StudentCourseView({ params }: { params: { id: string } }) {

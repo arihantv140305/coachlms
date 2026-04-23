@@ -1,5 +1,6 @@
 "use client";
 
+import { CourseStatus } from "@prisma/client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { updateCourse } from "@/actions/courses";
@@ -8,10 +9,20 @@ import Link from "next/link";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { formatDateForInput } from "@/lib/utils";
 
+type CourseResponse = {
+  id: string;
+  title: string;
+  description: string | null;
+  maxStudents: number;
+  status: CourseStatus;
+  startDate: string | null;
+  endDate: string | null;
+};
+
 export default function EditCoursePage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [course, setCourse] = useState<any>(null);
+  const [course, setCourse] = useState<CourseResponse | null>(null);
   const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
