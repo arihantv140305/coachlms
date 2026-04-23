@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Users, Edit, Calendar, BookOpen } from "lucide-react";
+import { ArrowLeft, Users, Edit, Calendar } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import CourseActions from "./CourseActions";
 

@@ -60,7 +60,7 @@ export async function removeStudent(enrollmentId: string): Promise<ActionRespons
     await prisma.enrollment.update({ where: { id: enrollmentId }, data: { status: "REMOVED" } });
     revalidatePath(`/courses/${enrollment.courseId}`);
     return { success: true, message: "Student removed from course" };
-  } catch (error) {
+  } catch {
     return { success: false, message: "Failed to remove student" };
   }
 }
