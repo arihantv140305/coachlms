@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CoachLMS
+
+A modern, Moodle-inspired Learning Management System for coaching institutes.
+
+## Features (Phase 1)
+
+- 🔐 **Authentication** — Signup, login, logout with secure session management
+- 👥 **Role-Based Access** — Admin, Instructor, Student with granular permissions
+- 📚 **Course Management** — Create, edit, archive courses
+- 📋 **Batch Management** — Create batches with auto-generated codes
+- 🎟️ **Enrollment** — Students join batches via 6-character codes
+- 📊 **Dashboards** — Role-specific dashboards with stats
+- 👤 **User Management** — Admin can manage users, change roles, activate/deactivate
+
+## Tech Stack
+
+- **Next.js 14** (App Router, Server Actions)
+- **TypeScript**
+- **PostgreSQL** (Supabase compatible)
+- **Prisma ORM**
+- **Tailwind CSS**
+- **NextAuth.js v4**
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- PostgreSQL database (local or [Supabase](https://supabase.com))
+
+### Setup
 
 ```bash
+# 1. Install dependencies
+npm install
+
+# 2. Configure environment
+cp .env.example .env
+# Edit .env with your DATABASE_URL and NEXTAUTH_SECRET
+
+# 3. Run database migrations
+npx prisma migrate dev --name init
+
+# 4. Seed the database
+npx prisma db seed
+
+# 5. Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Demo Credentials
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | admin@coachlms.com | Admin@123 |
+| Instructor | instructor@coachlms.com | Instructor@123 |
+| Student | student@coachlms.com | Student@123 |
 
-## Learn More
+**Demo Batch Code:** `MTH25A`
 
-To learn more about Next.js, take a look at the following resources:
+## Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+src/
+├── app/             # Next.js pages and routes
+├── actions/         # Server actions (business logic)
+├── components/      # Reusable UI components
+├── lib/             # Utilities, auth config, prisma client
+└── types/           # TypeScript type definitions
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deployment
 
-## Deploy on Vercel
+### Free (Vercel + Supabase)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Push to GitHub
+2. Deploy on [Vercel](https://vercel.com) — import from GitHub
+3. Create free PostgreSQL on [Supabase](https://supabase.com)
+4. Add environment variables in Vercel dashboard
+5. Run `npx prisma migrate deploy` pointing to Supabase
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Environment Variables
+
+```env
+DATABASE_URL="postgresql://..."
+NEXTAUTH_URL="https://your-app.vercel.app"
+NEXTAUTH_SECRET="openssl rand -base64 32"
+```
+
+## Roadmap
+
+- [x] Phase 1: Auth, roles, courses, batches, enrollment
+- [ ] Phase 2: Assignments, grading, materials, announcements
+- [ ] Phase 3: Attendance, forums, quizzes, reports
+- [ ] Future: OAuth, 2FA, fees, mobile app
