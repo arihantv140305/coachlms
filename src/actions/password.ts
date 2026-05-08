@@ -80,7 +80,7 @@ export async function verifyEmail(token: string): Promise<ActionResponse> {
     await prisma.passwordReset.update({ where: { id: reset.id }, data: { used: true } });
 
     return { success: true, message: "Email verified successfully!" };
-  } catch (error) {
+  } catch {
     return { success: false, message: "Verification failed" };
   }
 }
@@ -116,13 +116,13 @@ export async function bulkImportUsers(csvData: string): Promise<ActionResponse> 
       const existing = await prisma.user.findUnique({ where: { email } });
       if (existing) { skipped++; continue; }
 
-      const passwordHash = await bcrypt.hash(password, 12);
-      await prisma.user.create({ data: { name, email, passwordHash, role: role as any, isActive: true } });
+      const passwordHash = await bcrypt.hash(password as string, 12);
+      await prisma.user.create({ data: { name, email, passwordHash, role: role as "ADMIN" | "INSTRUCTOR" | "STUDENT", isActive: true } });
       created++;
     }
 
     const msg = `Created ${created} users, skipped ${skipped} existing.${errors.length > 0 ? ` ${errors.length} errors.` : ""}`;
-    return { success: true, message: msg, data: { created, skipped, errors } as any };
+    return { success: true, message: msg, data: { created, skipped, errors } as unknown as Record<string, unknown> };
   } catch (error) {
     console.error("Bulk import error:", error);
     return { success: false, message: "Import failed" };

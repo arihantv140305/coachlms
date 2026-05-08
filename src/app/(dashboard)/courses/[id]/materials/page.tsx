@@ -7,7 +7,7 @@ import Link from "next/link";
 import { ArrowLeft, Plus, BookOpen, Link as LinkIcon, Video, FileText, ExternalLink } from "lucide-react";
 import DeleteMaterialBtn from "./DeleteMaterialBtn";
 
-const typeIcons: Record<string, any> = { video: Video, document: FileText, link: LinkIcon };
+const typeIcons: Record<string, typeof Video> = { video: Video, document: FileText, link: LinkIcon };
 
 export default async function MaterialsPage({ params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);

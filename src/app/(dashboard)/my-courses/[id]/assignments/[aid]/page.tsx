@@ -68,7 +68,7 @@ export default async function StudentAssignmentDetailPage({ params }: { params: 
       <div className="glass-card p-6">
         <h2 className="font-semibold mb-3">Your Submission</h2>
         <p className="text-sm text-[#8888a0] mb-4">Submit a text response or paste a link to your solution (e.g. Google Drive, GitHub).</p>
-        <SubmitForm assignmentId={params.aid} courseId={params.id} existingContent={submission?.content} isGraded={!!submission?.grade} />
+        <SubmitForm assignmentId={params.aid} existingContent={submission?.content} isGraded={!!submission?.grade} />
       </div>
     </div>
   );

@@ -8,13 +8,13 @@ import { Upload, Loader2, Download } from "lucide-react";
 export default function ImportUsersPage() {
   const [csv, setCsv] = useState("");
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<{ created: number; skipped: number; errors: string[] } | null>(null);
 
   async function handleImport() {
     if (!csv.trim()) { toast.error("Paste CSV data first"); return; }
     setLoading(true);
     const res = await bulkImportUsers(csv);
-    if (res.success) { toast.success(res.message); setResult(res.data); }
+    if (res.success) { toast.success(res.message); setResult(res.data as unknown as { created: number; skipped: number; errors: string[] }); }
     else toast.error(res.message);
     setLoading(false);
   }

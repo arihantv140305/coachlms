@@ -34,7 +34,7 @@ export default function AttendancePage({ params }: { params: { id: string } }) {
       if (data && data.length > 0) {
         const existing: Record<string, "PRESENT" | "ABSENT" | "LATE"> = {};
         students.forEach((s) => { existing[s.id] = "PRESENT"; });
-        data.forEach((a: any) => { existing[a.studentId] = a.status; });
+        data.forEach((a: { studentId: string; status: "PRESENT" | "ABSENT" | "LATE" }) => { existing[a.studentId] = a.status; });
         setRecords(existing);
       }
     }).catch(() => {});

@@ -6,9 +6,9 @@ import { submitAssignment } from "@/actions/submissions";
 import toast from "react-hot-toast";
 import { Loader2, Send } from "lucide-react";
 
-type Props = { assignmentId: string; courseId: string; existingContent?: string; isGraded: boolean };
+type Props = { assignmentId: string; existingContent?: string; isGraded: boolean };
 
-export default function SubmitForm({ assignmentId, courseId, existingContent, isGraded }: Props) {
+export default function SubmitForm({ assignmentId, existingContent, isGraded }: Props) {
   const router = useRouter();
   const [content, setContent] = useState(existingContent || "");
   const [loading, setLoading] = useState(false);

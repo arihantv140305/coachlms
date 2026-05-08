@@ -53,7 +53,7 @@ export async function deleteMaterial(materialId: string): Promise<ActionResponse
     await prisma.material.delete({ where: { id: materialId } });
     revalidatePath(`/courses/${material.courseId}/materials`);
     return { success: true, message: "Material deleted" };
-  } catch (error) {
+  } catch {
     return { success: false, message: "Failed to delete material" };
   }
 }

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, BookOpen, Link as LinkIcon, Video, FileText, ExternalLink } from "lucide-react";
 
-const typeIcons: Record<string, any> = { video: Video, document: FileText, link: LinkIcon };
+const typeIcons: Record<string, typeof Video> = { video: Video, document: FileText, link: LinkIcon };
 
 export default async function StudentMaterialsPage({ params }: { params: { id: string } }) {
   const course = await prisma.course.findUnique({ where: { id: params.id }, select: { title: true } });
