@@ -3,13 +3,14 @@
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { GraduationCap, LayoutDashboard, Users, BookOpen, UserPlus, FolderOpen, LogOut, Menu } from "lucide-react";
+import { GraduationCap, LayoutDashboard, Users, BookOpen, UserPlus, FolderOpen, LogOut, Menu, Upload } from "lucide-react";
 import { useState } from "react";
 import { getInitials } from "@/lib/utils";
 
 const adminLinks = [
   { href: "/dashboard/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/users", label: "Users", icon: Users },
+  { href: "/admin/import-users", label: "Import Users", icon: Upload },
   { href: "/courses", label: "Courses", icon: BookOpen },
 ];
 

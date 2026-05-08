@@ -81,6 +81,10 @@ export default function LoginPage() {
             <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2">
               {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Signing in...</> : "Sign In"}
             </button>
+
+            <div className="text-right">
+              <Link href="/forgot-password" className="text-sm text-indigo-400 hover:text-indigo-300">Forgot password?</Link>
+            </div>
           </form>
         </div>
 

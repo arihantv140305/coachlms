@@ -109,9 +109,89 @@ async function main() {
     });
   }
 
+  // --- Phase 2: Assignments ---
+  const mathAssignment1 = await prisma.assignment.create({
+    data: {
+      courseId: mathCourse.id, title: "Chapter 5: Differential Calculus",
+      description: "Solve problems 1-20 from Chapter 5. Show complete working.\n\nSubmit your solution as a Google Drive link to a PDF or photo of your work.",
+      dueDate: new Date("2025-06-15"), totalMarks: 50,
+    },
+  });
+
+  const mathAssignment2 = await prisma.assignment.create({
+    data: {
+      courseId: mathCourse.id, title: "Linear Algebra Practice Set",
+      description: "Complete the attached practice set on matrices and determinants.",
+      dueDate: new Date("2025-06-30"), totalMarks: 100,
+    },
+  });
+
+  const physicsAssignment = await prisma.assignment.create({
+    data: {
+      courseId: physicsCourse.id, title: "Mechanics Problem Set 1",
+      description: "Solve 10 problems on Newton's laws and friction. Upload your solutions.",
+      dueDate: new Date("2025-06-20"), totalMarks: 40,
+    },
+  });
+
+  // --- Sample Submissions + Grades ---
+  const sub1 = await prisma.submission.create({
+    data: { assignmentId: mathAssignment1.id, studentId: students[0].id, content: "https://drive.google.com/file/d/sample-aarav-ch5", status: "GRADED" },
+  });
+  await prisma.grade.create({
+    data: { submissionId: sub1.id, marks: 42, feedback: "Good work! Minor error in Q15.", gradedById: inst1.id },
+  });
+
+  const sub2 = await prisma.submission.create({
+    data: { assignmentId: mathAssignment1.id, studentId: students[1].id, content: "https://drive.google.com/file/d/sample-ananya-ch5", status: "SUBMITTED" },
+  });
+
+  await prisma.submission.create({
+    data: { assignmentId: physicsAssignment.id, studentId: students[1].id, content: "Solved all 10 problems. Check attached link: https://drive.google.com/file/d/sample-physics", status: "SUBMITTED" },
+  });
+
+  // --- Materials ---
+  await prisma.material.createMany({
+    data: [
+      { courseId: mathCourse.id, title: "NCERT Solutions Ch.5", url: "https://ncert.nic.in/textbook/math-12-ch5.pdf", type: "document", order: 0 },
+      { courseId: mathCourse.id, title: "Calculus Video Lecture", url: "https://youtube.com/watch?v=sample-calculus", type: "video", order: 1 },
+      { courseId: mathCourse.id, title: "Practice Problems Set", url: "https://drive.google.com/file/d/sample-practice-set", type: "link", order: 2 },
+      { courseId: physicsCourse.id, title: "Mechanics Notes", url: "https://drive.google.com/file/d/mechanics-notes", type: "document", order: 0 },
+      { courseId: physicsCourse.id, title: "Newton's Laws Simulation", url: "https://phet.colorado.edu/en/simulations/forces-and-motion", type: "link", order: 1 },
+    ],
+  });
+
+  // --- Announcements ---
+  await prisma.announcement.createMany({
+    data: [
+      { courseId: mathCourse.id, title: "Welcome to Mathematics Grade 12!", content: "Welcome to the course! Please review the syllabus and ensure you have your textbooks ready.\n\nFirst class will cover differential calculus fundamentals.", authorId: inst1.id },
+      { courseId: mathCourse.id, title: "Assignment Deadline Extended", content: "The deadline for Chapter 5 assignment has been extended to June 15th.\n\nPlease complete all 20 problems.", authorId: inst1.id },
+      { courseId: physicsCourse.id, title: "Lab Session Next Week", content: "We will have a practical lab session on Newton's Laws next week. Please bring your lab notebooks.", authorId: inst1.id },
+    ],
+  });
+
+  // --- Attendance (sample for today) ---
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  for (let i = 0; i < 5; i++) {
+    await prisma.attendance.create({
+      data: {
+        courseId: mathCourse.id,
+        studentId: students[i].id,
+        date: today,
+        status: i < 3 ? "PRESENT" : i === 3 ? "LATE" : "ABSENT",
+        markedById: inst1.id,
+      },
+    });
+  }
+
   console.log("✅ Users: 1 admin, 2 instructors, 8 students");
   console.log("✅ Courses: 4 (3 active, 1 draft)");
   console.log(`✅ Enrollments: ${enrollPairs.length}`);
+  console.log("✅ Assignments: 3 (with sample submissions & grades)");
+  console.log("✅ Materials: 5 links");
+  console.log("✅ Announcements: 3");
+  console.log("✅ Attendance: 5 records for today");
   console.log("\n🎉 Seeding complete!\n");
   console.log("📋 Credentials:");
   console.log("   Admin:      admin@coachlms.com / Admin@123");
@@ -120,7 +200,7 @@ async function main() {
   console.log("   MTH25A — Mathematics Grade 12");
   console.log("   PHY25M — Physics Grade 12");
   console.log("   CHM25A — Chemistry Grade 12");
-  console.log("   ENG25D — English Literature (Draft — can't join yet)");
+  console.log("   ENG25D — English Literature (Draft)");
 }
 
 main()

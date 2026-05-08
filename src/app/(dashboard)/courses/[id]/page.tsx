@@ -3,9 +3,17 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Users, Edit, Calendar } from "lucide-react";
+import { ArrowLeft, Users, Edit, Calendar, ClipboardList, BookOpen, Megaphone, UserCheck, BarChart3 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import CourseActions from "./CourseActions";
+
+const courseNav = [
+  { label: "Assignments", href: "assignments", icon: ClipboardList },
+  { label: "Materials", href: "materials", icon: BookOpen },
+  { label: "Announcements", href: "announcements", icon: Megaphone },
+  { label: "Attendance", href: "attendance", icon: UserCheck },
+  { label: "Gradebook", href: "gradebook", icon: BarChart3 },
+];
 
 export default async function CourseDetailPage({ params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
@@ -33,6 +41,17 @@ export default async function CourseDetailPage({ params }: { params: { id: strin
           {canManage && <Link href={`/courses/${course.id}/edit`} className="btn-secondary flex items-center gap-2"><Edit className="w-4 h-4" /> Edit</Link>}
         </div>
       </div>
+
+      {/* Course Navigation Tabs */}
+      {canManage && (
+        <div className="flex gap-2 overflow-x-auto pb-1 -mb-2">
+          {courseNav.map((item) => (
+            <Link key={item.href} href={`/courses/${params.id}/${item.href}`} className="btn-ghost flex items-center gap-2 text-sm whitespace-nowrap px-4 py-2 hover:bg-indigo-500/10 hover:text-indigo-400">
+              <item.icon className="w-4 h-4" /> {item.label}
+            </Link>
+          ))}
+        </div>
+      )}
 
       {/* Join Code Card */}
       {canManage && (

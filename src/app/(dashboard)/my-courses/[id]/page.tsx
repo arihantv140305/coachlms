@@ -3,8 +3,15 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Calendar, Users, User } from "lucide-react";
+import { ArrowLeft, Calendar, Users, User, ClipboardList, BookOpen, Megaphone, Award } from "lucide-react";
 import { formatDate } from "@/lib/utils";
+
+const studentNav = [
+  { label: "Assignments", href: "assignments", icon: ClipboardList, color: "from-indigo-500 to-blue-500" },
+  { label: "Materials", href: "materials", icon: BookOpen, color: "from-emerald-500 to-teal-500" },
+  { label: "Announcements", href: "announcements", icon: Megaphone, color: "from-amber-500 to-orange-500" },
+  { label: "My Grades", href: "grades", icon: Award, color: "from-purple-500 to-pink-500" },
+];
 
 export default async function StudentCourseView({ params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
@@ -13,7 +20,6 @@ export default async function StudentCourseView({ params }: { params: { id: stri
   const course = await getCourse(params.id);
   if (!course) notFound();
 
-  // Check student is enrolled
   const enrollment = course.enrollments.find((e) => e.studentId === session.user.id && e.status === "ACTIVE");
   if (!enrollment && session.user.role === "STUDENT") notFound();
 
@@ -31,6 +37,18 @@ export default async function StudentCourseView({ params }: { params: { id: stri
           <span className="flex items-center gap-1"><User className="w-4 h-4" /> {course.createdBy.name}</span>
           <span className="flex items-center gap-1"><Users className="w-4 h-4" /> {activeStudents.length} students</span>
         </p>
+      </div>
+
+      {/* Quick Navigation Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {studentNav.map((item, i) => (
+          <Link key={item.href} href={`/my-courses/${params.id}/${item.href}`} className="glass-card p-4 text-center hover:border-indigo-500/30 transition-all group animate-fade-in-up" style={{ animationDelay: `${i * 0.05}s` }}>
+            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform`}>
+              <item.icon className="w-5 h-5 text-white" />
+            </div>
+            <p className="text-sm font-medium">{item.label}</p>
+          </Link>
+        ))}
       </div>
 
       {course.description && (
@@ -64,11 +82,6 @@ export default async function StudentCourseView({ params }: { params: { id: stri
             {activeStudents.length > 10 && <p className="text-xs text-[#8888a0]">and {activeStudents.length - 10} more...</p>}
           </div>
         </div>
-      </div>
-
-      {/* Phase 2 placeholder */}
-      <div className="glass-card p-8 text-center border-dashed">
-        <p className="text-[#555570] text-sm">📚 Assignments, materials, and announcements will appear here in Phase 2.</p>
       </div>
     </div>
   );
