@@ -66,9 +66,14 @@ export async function requestEmailVerification(userId: string): Promise<ActionRe
 
 export async function verifyEmail(token: string): Promise<ActionResponse> {
   try {
-    const reset = await prisma.passwordReset.findUnique({ where: { token } });
+    const reset = await prisma.passwordReset.findUnique({ where: { token }, include: { user: true } });
     if (!reset) return { success: false, message: "Invalid verification link" };
-    if (reset.used) return { success: false, message: "Already verified" };
+
+    // If token was already used, check if user is verified — treat as success
+    if (reset.used) {
+      if (reset.user.emailVerified) return { success: true, message: "Email verified successfully!" };
+      return { success: false, message: "This link has already been used" };
+    }
     if (reset.expiresAt < new Date()) return { success: false, message: "Link expired" };
 
     await prisma.user.update({ where: { id: reset.userId }, data: { emailVerified: true } });

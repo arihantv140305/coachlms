@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { verifyEmail } from "@/actions/password";
 import Link from "next/link";
@@ -11,9 +11,14 @@ export default function VerifyEmailPage() {
   const token = searchParams.get("token") || "";
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
   const [message, setMessage] = useState("");
+  const calledRef = useRef(false);
 
   useEffect(() => {
     if (!token) { setStatus("error"); setMessage("Invalid verification link."); return; }
+    // Guard against React Strict Mode double-fire
+    if (calledRef.current) return;
+    calledRef.current = true;
+
     verifyEmail(token).then((result) => {
       setStatus(result.success ? "success" : "error");
       setMessage(result.message);
